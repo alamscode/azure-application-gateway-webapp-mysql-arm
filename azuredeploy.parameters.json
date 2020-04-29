@@ -1,0 +1,48 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "vmssName": {
+      "value": "webapptest"
+    },
+    "instanceCount": {
+      "value": 2
+    },
+    "customDataString": {
+      "value": "#!/bin/bash\n\nset -x\nsleep 30\napt-get update -y\napt-get upgrade -y\napt-get install build-essential npm mysql-server -y\nmkdir /home/alam/app\ncd /home/alam/app\ngit clone https://github.com/codetrash/rest-crud.git\ncd /home/alam/app/rest-crud\nsed -i 's/localhost/webapptestmysqlserver.mysql.database.azure.com/g' /home/alam/app/rest-crud/server.js\nsed -i 's/root/alam@webapptestmysqlserver/g' /home/alam/app/rest-crud/server.js\n\nsed -i 's/'\"''\"'/'\"'password'\"'/g' /home/alam/app/rest-crud/server.js\nmysql -u alam@webapptestmysqlserver -ppassword -h webapptestmysqlserver.mysql.database.azure.com test < /home/alam/app/rest-crud/t_user.sql\nnpm install\nnpm install pm2 -g\npm2 start server.js --name app"
+    },
+    "addressPrefix": {
+      "value": "10.0.0.0/16"
+    },
+    "subnetPrefix": {
+      "value": "10.0.0.0/28"
+    },
+    "administratorLogin": {
+     "value": "alam"
+    },
+    "administratorLoginPassword": {
+      "value": "12345678910Abc#"
+    },
+    "mysqlVersion": {
+      "value": "5.6"
+    },
+    "networkSecurityGroupName": {
+      "value": "SecGroupNet"
+    },
+    "VmSize": {
+      "value": "Standard_B2s"
+    },
+    "adminUsername": {
+      "value": "alam"
+    },
+    "databaseSkuSizeMB": {
+      "value": 51200
+    },
+    "authenticationType": {
+      "value": "sshPublicKey"
+    },
+    "adminPasswordOrKey": {
+      "value": "<enter-public-key-here>"
+    }
+  }
+}
